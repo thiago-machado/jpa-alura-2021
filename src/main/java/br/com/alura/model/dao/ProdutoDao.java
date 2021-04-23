@@ -1,0 +1,51 @@
+package br.com.alura.model.dao;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import br.com.alura.model.Produto;
+
+public class ProdutoDao {
+
+	private EntityManager em;
+	
+	public ProdutoDao(EntityManager em) {
+		this.em = em;
+	}
+	
+	public void salvar(Produto entity) {
+		em.persist(entity);
+	}
+	
+	public Produto buscar(Long id) {
+		return em.find(Produto.class, id);
+	}
+	
+	public List<Produto> buscar() {
+		String jpql = "SELECT p FROM Produto p";
+		return em.createQuery(jpql, Produto.class).getResultList();
+	}
+	
+	public List<Produto> buscarPorNome(String nome) {
+		String jpql = "SELECT p FROM Produto p WHERE p.nome = :pNome";
+		return em.createQuery(jpql, Produto.class)
+				.setParameter("pNome", nome)
+				.getResultList();
+	}
+	
+	public List<Produto> buscarPorNomeDaCategoria(String nome) {
+		String jpql = "SELECT p FROM Produto p WHERE p.categoria.nome = :pNome";
+		return em.createQuery(jpql, Produto.class)
+				.setParameter("pNome", nome)
+				.getResultList();
+	}
+	
+	public BigDecimal buscarPrecoPorNome(String nome) {
+		String jpql = "SELECT p.preco FROM Produto p WHERE p.nome = :pNome";
+		return em.createQuery(jpql, BigDecimal.class)
+				.setParameter("pNome", nome)
+				.getSingleResult();
+	}
+}
