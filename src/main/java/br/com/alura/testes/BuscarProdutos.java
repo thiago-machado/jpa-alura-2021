@@ -1,27 +1,32 @@
 package br.com.alura.testes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import br.com.alura.model.Categoria;
+import br.com.alura.model.Pedido;
+import br.com.alura.model.Produto;
 import br.com.alura.model.StatusEnum;
 import br.com.alura.model.dao.CategoriaDao;
+import br.com.alura.model.dao.PedidoDao;
 import br.com.alura.model.dao.ProdutoDao;
-import br.com.alura.model.Categoria;
-import br.com.alura.model.Produto;
 import br.com.alura.util.JPAUtil;
 
 public class BuscarProdutos {
 
 	private static ProdutoDao produtoDao;
 	private static CategoriaDao categoriaDao;
+	private static PedidoDao pedidoDao;
 
 	public static void main(String[] args) {
 
 		EntityManager em = JPAUtil.getEntityManager();
 		produtoDao = new ProdutoDao(em);
 		categoriaDao = new CategoriaDao(em);
+		pedidoDao = new PedidoDao(em);
 
 		cadastroDeProdutos(em);
 		
@@ -45,6 +50,12 @@ public class BuscarProdutos {
 		System.out.println("\nSELECIONANDO PREÇO POR NOME DO PRODUTO");
 		BigDecimal preco = produtoDao.buscarPrecoPorNome("LG X Power");
 		System.out.println(preco);
+		
+		System.out.println("\nSELECIONANDO PREÇO POR NOME, PREÇO OU DATA");
+		List<Produto> produtos = produtoDao.buscaSlecionada(null, null, LocalDate.now());
+		produtos.forEach(p -> {
+			System.out.println(p.getNome());
+		});
 		
 		em.close();
 	}
